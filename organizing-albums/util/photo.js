@@ -20,17 +20,13 @@
  * e.g. node photo test
  */
 
-
 const path = require('path');
 const process = require('process');
 const fs = require('fs').promises;
 
-
-
 // node에 인자로 전달 받은 test 폴더 경로를 알아낸다
 const testPath = path.resolve(`../pictures/${process.argv[2]}`);
 console.log(`🙌 testPath is ${testPath}`);
-
 
 fs.readdir(testPath) // test 폴더 경로에 있는 사진, 동영상 파일들의 정보를 읽는다.
   .then((fileList) => {
@@ -44,6 +40,7 @@ fs.readdir(testPath) // test 폴더 경로에 있는 사진, 동영상 파일들
           fs.mkdir(`${testPath}/videos`)
           .then(
             fs.rename(filePath, `${testPath}/videos/${file}`)
+              .catch(console.error)
           )
           .catch(console.error)
           break;
@@ -52,6 +49,7 @@ fs.readdir(testPath) // test 폴더 경로에 있는 사진, 동영상 파일들
           fs.mkdir(`${testPath}/captured`)
           .then(
             fs.rename(filePath, `${testPath}/captured/${file}`)
+              .catch(console.error)
           )
           .catch(console.error)
           break;
@@ -60,6 +58,7 @@ fs.readdir(testPath) // test 폴더 경로에 있는 사진, 동영상 파일들
             fs.mkdir(`${testPath}/duplicated`)
             .then(
               fs.rename(`${testPath}/${file.replace('E', '')}`, `${testPath}/duplicated/${file.replace('E', '')}`)
+              .catch(console.error)
             )
             .catch(console.error)
           }
