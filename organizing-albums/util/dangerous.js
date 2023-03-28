@@ -24,13 +24,13 @@ const makeDir = (file, mediatype) => {
     console.log(`🙌 '${dirPath}' already exists!! The file will be transferred.`)
     moveFile(file, mediatype)
   } else {
-    try{
-      fs.mkdirSync(dirPath);
-      console.log(`🙌 '${dirPath}' is created!! The file will be transferred.`)
-      moveFile(file, mediatype)
-    } catch (error) {
-      console.log(error)
-    }
+    // 폴더가 만들어지면 파일이 옮겨져야 하는데 비동기적으로 작성했더니 오류가 난다.
+    fs.promises.mkdir(dirPath)
+      .then(() => {
+        moveFile(file, mediatype)
+        console.log(`🙌 '${dirPath}' is created!! The file will be transferred.`)
+      })
+      .catch(console.error)
   }
 }
 
