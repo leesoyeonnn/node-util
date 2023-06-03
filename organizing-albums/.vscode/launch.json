@@ -12,6 +12,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\util\\photo.js",
+            "args": ["test"],
             "runtimeExecutable": "nodemon",
             "restart": true,
         }

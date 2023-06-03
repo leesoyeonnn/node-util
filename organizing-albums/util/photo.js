@@ -9,62 +9,66 @@ const fs = require('fs');
 const testPath = path.resolve(`../pictures/${process.argv[2]}`);
 console.log(`🙌 testPath is ${testPath}`);
 
-const moveFile = (file, mediatype) => {
-  const fileName = path.basename(file);
-  const newPath = testPath + path.sep + mediatype + path.sep + fileName;
-
-  fs.promises.rename(file, newPath)
+const moveFile = (filePath, mediatype) => {
+  const fileName = path.basename(filePath);
+  const newPath = testPath + path.sep + mediatype + path.sep + fileName; 
+  console.log(filePath)
+  console.log(newPath)
+  fs.promises.rename(filePath, newPath)
   .catch(console.error)
 }
 
-const makeDir = (file, mediatype) => {
+const makeDir = (filePath, mediatype) => {
   const dirPath  = testPath + path.sep + mediatype;
   
   if(fs.existsSync(dirPath)) {
     console.log(`🙌 '${dirPath}' already exists!! The file will be transferred.`)
-    moveFile(file, mediatype)
+    moveFile(filePath, mediatype)
   } else {
     try{
       fs.mkdirSync(dirPath);
       console.log(`🙌 '${dirPath}' is created!! The file will be transferred.`)
-      moveFile(file, mediatype)
+      moveFile(filePath, mediatype)
     } catch (error) {
       console.log(error)
     }
   }
 }
 
-const classify = (fileList) => {
-  fileList.forEach((file) => {
-    const fileExtension = path.extname(file);
+const classify = (filePathList) => {
+  filePathList.forEach((filePath) => {
+    const fileExtension = path.extname(filePath);
 
     switch (fileExtension) {
       case '.mov':
       case '.mp4':
-        makeDir(file, 'videos');
+        makeDir(filePath, 'videos');
         break;
       case '.aae':
       case '.png':
-        makeDir(file, 'captured');
+        makeDir(filePath, 'captured');
         break;
       case '.jpg':
-        if(path.basename(file, '.jpg').includes('E')) {
-          makeDir(file, 'duplicated');
+        if(path.basename(filePath, '.jpg').includes('E')) {
+          const originFileName = path.basename(filePath).replace('E', '');
+          const originFilePath = testPath + path.sep + originFileName;
+
+          makeDir(originFilePath, 'duplicated');
         }
     }
   })
 }
 
 const readFileList = (testPath) => {
-  const fileList = [];
+  const filePathList = [];
 
   fs.promises.readdir(testPath)
-  .then((items) => {
-    items.forEach((item) => fileList.push(testPath + path.sep + item))
+  .then((files) => {
+    files.forEach((file) => filePathList.push(testPath + path.sep + file))
     console.log(`🙌 file list in testPath :`);
-    console.log(fileList);
+    console.log(filePathList);
     
-    classify(fileList);
+    classify(filePathList);
   })
   .catch(console.error);
 }
